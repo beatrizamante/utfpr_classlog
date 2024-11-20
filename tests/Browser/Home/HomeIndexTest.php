@@ -14,5 +14,4 @@ class HomeIndexTest extends FrameworkTestCase
 
         $this->assertEquals('HTTP/1.1 200 OK', $statusCode);
     }
-
 }
