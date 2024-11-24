@@ -13,6 +13,6 @@ class DashboardController extends Controller
 {
     public function index(): void
     {
-        echo "dashboard somente para autorizados";
+        echo "dashboard somente para autorizados.";
     }
 }
