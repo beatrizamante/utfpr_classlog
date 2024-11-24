@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Models;
 
+use App\Enums\RolesEnum;
 use App\Models\User;
 use Tests\TestCase;
 
@@ -19,7 +20,7 @@ class UserTest extends TestCase
         'university_registry' => '654987321',
         'password' => '123456',
         'password_confirmation' => '123456',
-          'role_id' => 1
+          'role_id' => RolesEnum::PROFESSOR->value
         ]);
         $this->user->save();
 
@@ -28,7 +29,7 @@ class UserTest extends TestCase
         'university_registry' => '9876544321',
         'password' => '123456',
         'password_confirmation' => '123456',
-          'role_id' => 1
+          'role_id' => RolesEnum::PROFESSOR->value
         ]);
         $this->user2->save();
     }

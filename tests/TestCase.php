@@ -3,6 +3,7 @@
 namespace Tests;
 
 use Core\Database\Database;
+use Database\Populate\RolesPopulate;
 use PHPUnit\Framework\TestCase as FrameworkTestCase;
 
 class TestCase extends FrameworkTestCase
@@ -11,6 +12,7 @@ class TestCase extends FrameworkTestCase
     {
          Database::create();
          Database::migrate();
+         RolesPopulate::populate();
     }
 
     public function tearDown(): void
