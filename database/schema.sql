@@ -15,9 +15,6 @@ CREATE TABLE `roles` (
                        `name` VARCHAR(255) NOT NULL
 );
 
-INSERT INTO roles (`name`) values ('professor');
-INSERT INTO roles (`name`) values ('admin');
-
 CREATE TABLE `blocks` (
                         `id` INT AUTO_INCREMENT PRIMARY KEY,
                         `name` VARCHAR(255) NOT NULL

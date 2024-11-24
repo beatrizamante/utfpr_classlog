@@ -13,3 +13,5 @@ parameters:
     - '#Unsafe usage of new static\(\)\.#'
     - '#Call to an undefined method ReflectionType::getName\(\).#'
     - '#Access to protected property App\\Models\\User::\$password.#'
+    - '#Access to an undefined property Core\\Database\\ActiveRecord\\Model::\$[a-zA-Z0-9_]+.#'
+

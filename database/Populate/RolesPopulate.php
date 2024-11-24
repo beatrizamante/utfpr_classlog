@@ -3,34 +3,19 @@
 namespace Database\Populate;
 
 
+use App\Models\Roles;
+
 class RolesPopulate
 {
   public static function populate()
   {
-    $data =  [
-      'name' => 'Fulano',
-      'email' => 'fulano@example.com',
-      'password' => '123456',
-      'password_confirmation' => '123456'
-    ];
+    $admin = ['name' => 'admin'];
+    $professor = ['name' => 'professor'];
 
-    $user = new User($data);
-    $user->save();
+    $adminRole = new Roles($admin);
+    $adminRole->save();
 
-    $numberOfUsers = 10;
-
-    for ($i = 1; $i < $numberOfUsers; $i++) {
-      $data =  [
-        'name' => 'Fulano ' . $i,
-        'email' => 'fulano' . $i . '@example.com',
-        'password' => '123456',
-        'password_confirmation' => '123456'
-      ];
-
-      $user = new User($data);
-      $user->save();
-    }
-
-    echo "Users populated with $numberOfUsers registers\n";
+    $professorRole = new Roles($professor);
+    $professorRole->save();
   }
 }

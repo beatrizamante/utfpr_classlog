@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Core\Database\ActiveRecord\BelongsTo;
 use Lib\Validations;
 use Core\Database\ActiveRecord\Model;
 
@@ -44,6 +45,20 @@ class User extends Model
     public static function findByUniversityRegistry(string $ra): User | null
     {
         return User::findBy(['university_registry' => $ra]);
+    }
+
+  /**
+   * @return BelongsTo
+   */
+    public function role(): BelongsTo
+    {
+        return $this->belongsTo(Roles::class, 'role_id');
+    }
+
+    public function roleName(): ?string
+    {
+        $role = $this->role()->get();
+        return $role->name;
     }
 
     public function __set(string $property, mixed $value): void

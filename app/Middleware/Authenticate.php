@@ -2,24 +2,19 @@
 
 namespace App\Middleware;
 
+use Core\Exceptions\HTTPException;
 use Core\Http\Middleware\Middleware;
 use Core\Http\Request;
 use Lib\Authentication\Auth;
-use Lib\FlashMessage;
 
 class Authenticate implements Middleware
 {
     public function handle(Request $request): void
     {
         if (!Auth::check()) {
-            FlashMessage::danger('Você deve estar logado para acessar essa página');
-            $this->redirectTo(route('users.login'));
+            header('Content-Type: application/json', true, 401);
+            echo json_encode(['error' => 'Você precisa estar autenticado para acessar esta página.']);
+            exit;
         }
-    }
-
-    private function redirectTo(string $location): void
-    {
-        header('Location: ' . $location);
-        exit;
     }
 }

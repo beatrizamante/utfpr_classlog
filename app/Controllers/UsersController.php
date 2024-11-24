@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Enums\RolesEnum;
 use App\Models\User;
 use Core\Http\Controllers\Controller;
 use Core\Http\Request;
@@ -16,7 +17,7 @@ class UsersController extends Controller
     {
 
         $params = $request->getBody();
-        $params['role_id'] = 1;
+        $params['role_id'] = RolesEnum::PROFESSOR->value;
         $user = new User($params);
 
         if ($user->isValid()) {
