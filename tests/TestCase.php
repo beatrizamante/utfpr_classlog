@@ -9,13 +9,13 @@ class TestCase extends FrameworkTestCase
 {
     public function setUp(): void
     {
-        // Database::create();
-        // Database::migrate();
+         Database::create();
+         Database::migrate();
     }
 
     public function tearDown(): void
     {
-        // Database::drop();
+         Database::drop();
     }
 
     protected function getOutput(callable $callable): string
