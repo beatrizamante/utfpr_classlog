@@ -13,7 +13,7 @@ use function json_encode;
 
 class UsersController extends Controller
 {
-    public function register(Request $request): void
+    public function register(Request $request)
     {
 
         $params = $request->getBody();
@@ -22,13 +22,12 @@ class UsersController extends Controller
 
         if ($user->isValid()) {
             if ($user->save()) {
-                echo "User created successfully!";
+                echo json_encode(['success' => 'Criado com sucesso']);
             } else {
-                echo "Error creating user!";
+                echo json_encode(['error' => 'Você precisa estar autenticado para acessar esta página.']);
             }
         } else {
-            echo "Validation failed!";
-            print_r($user->errors());
+            echo json_encode(['error' => 'Você precisa estar autenticado para acessar esta página.']);
         }
     }
 
@@ -38,15 +37,15 @@ class UsersController extends Controller
         $user = User::findByUniversityRegistry($params['university_registry']);
         if ($user && $user->authenticate($params['password'])) {
             Auth::login($user);
-            echo "user logged in successfully!";
+            echo json_encode(['success' => 'Logado com sucesso']);
         } else {
-            echo "invalid university_registry or password";
+            echo json_encode(['error' => 'RA ou senha errados']);
         }
     }
 
     public function destroy(): void
     {
           Auth::logout();
-          echo "user logged out successfully!";
+          echo json_encode(['success' => 'Logout feito com sucesso']);
     }
 }
