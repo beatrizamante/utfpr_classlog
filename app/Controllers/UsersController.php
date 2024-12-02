@@ -13,7 +13,7 @@ use function json_encode;
 
 class UsersController extends Controller
 {
-    public function register(Request $request)
+    public function register(Request $request): void
     {
 
         $params = $request->getBody();
