@@ -3,19 +3,21 @@
 namespace Tests;
 
 use Core\Database\Database;
+use Database\Populate\RolesPopulate;
 use PHPUnit\Framework\TestCase as FrameworkTestCase;
 
 class TestCase extends FrameworkTestCase
 {
     public function setUp(): void
     {
-        // Database::create();
-        // Database::migrate();
+         Database::create();
+         Database::migrate();
+         RolesPopulate::populate();
     }
 
     public function tearDown(): void
     {
-        // Database::drop();
+         Database::drop();
     }
 
     protected function getOutput(callable $callable): string

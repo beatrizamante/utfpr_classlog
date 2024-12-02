@@ -301,11 +301,9 @@ abstract class Model
         $table = static::$table;
         $attributes = implode(', ', static::$columns);
 
-        $sql = <<<SQL
-            SELECT id, {$attributes} FROM {$table} WHERE 
-        SQL;
+      $sql = "SELECT id, {$attributes} FROM {$table} WHERE ";
 
-        $sqlConditions = array_map(function ($column) {
+      $sqlConditions = array_map(function ($column) {
             return "{$column} = :{$column}";
         }, array_keys($conditions));
 
