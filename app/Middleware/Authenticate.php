@@ -12,7 +12,6 @@ class Authenticate implements Middleware
     public function handle(Request $request): void
     {
         if (!Auth::check()) {
-           
             header('Content-Type: application/json', true, 401);
             echo json_encode(['error' => 'Você precisa estar autenticado para acessar esta página.']);
             exit;
