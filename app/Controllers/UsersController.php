@@ -15,24 +15,24 @@ class UsersController extends Controller
 {
     public function register(Request $request): void
     {
-
         $params = $request->getBody();
         $params['role_id'] = RolesEnum::PROFESSOR->value;
         $user = new User($params);
-
+        
         if ($user->isValid()) {
             if ($user->save()) {
                 echo json_encode(['success' => 'Criado com sucesso']);
             } else {
-                echo json_encode(['error' => 'Você precisa estar autenticado para acessar esta página.']);
+                echo json_encode(['error' => 'Erro ao salvar user']);
             }
         } else {
-            echo json_encode(['error' => 'Você precisa estar autenticado para acessar esta página.']);
+            echo json_encode(['error' => 'Erro ao criar user']);
         }
     }
 
     public function login(Request $request): void
     {
+        
         $params = $request->getBody();
         $user = User::findByUniversityRegistry($params['university_registry']);
         if ($user && $user->authenticate($params['password'])) {
