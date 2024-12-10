@@ -18,7 +18,7 @@ class UsersController extends Controller
         $params = $request->getBody();
         $params['role_id'] = RolesEnum::PROFESSOR->value;
         $user = new User($params);
-        
+
         if ($user->isValid()) {
             if ($user->save()) {
                 echo json_encode(['success' => 'Criado com sucesso']);
@@ -32,7 +32,7 @@ class UsersController extends Controller
 
     public function login(Request $request): void
     {
-        
+
         $params = $request->getBody();
         $user = User::findByUniversityRegistry($params['university_registry']);
         if ($user && $user->authenticate($params['password'])) {
