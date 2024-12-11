@@ -8,6 +8,7 @@ use Core\Http\Controllers\Controller;
 use Core\Http\Request;
 use Lib\Authentication\Auth;
 
+use function array_map;
 use function array_push;
 use function json_encode;
 
@@ -47,5 +48,18 @@ class UsersController extends Controller
     {
           Auth::logout();
           echo json_encode(['success' => 'Logout feito com sucesso']);
+    }
+
+    public function professors(): void
+    {
+        $professors = User::where(['role_id' => RolesEnum::PROFESSOR->value]);
+
+        $professorsArray = array_map(function ($professor) {
+            return [
+            'id' => $professor->id,
+            'name' => $professor->name,
+            ];
+        }, $professors);
+        echo json_encode(['data' => $professorsArray]);
     }
 }

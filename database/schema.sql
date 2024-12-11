@@ -52,7 +52,9 @@ CREATE TABLE `subjects` (
 
 CREATE TABLE `schedules` (
                            `id` INT AUTO_INCREMENT PRIMARY KEY,
-                           `name` DATETIME NOT NULL
+                           `start_time` TIME NOT NULL,
+                           `end_time` TIME NOT NULL,
+                           `day_of_week` ENUM('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday') NOT NULL
 );
 
 CREATE TABLE `user_subjects` (
