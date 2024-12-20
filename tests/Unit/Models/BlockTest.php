@@ -9,7 +9,8 @@ use Tests\TestCase;
 
 class BlockTest extends TestCase
 {
-    private Block $block;
+  private Block $block;
+  private Block $block2;
 
     public function setUp(): void
     {
@@ -19,11 +20,16 @@ class BlockTest extends TestCase
         'name' => 'H',
         ]);
         $this->block->save();
+
+      $this->block2 = new Block([
+        'name' => 'X',
+      ]);
+      $this->block2->save();
     }
 
     public function test_should_create_new_block(): void
     {
-        $this->assertCount(1, Block::all());
+        $this->assertCount(2, Block::all());
     }
 
 
@@ -38,6 +44,8 @@ class BlockTest extends TestCase
     {
         $this->block->destroy();
 
-        $this->assertCount(0, Block::all());
+        $this->assertCount(1, Block::all());
     }
+
+
 }
