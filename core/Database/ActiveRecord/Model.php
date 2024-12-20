@@ -128,6 +128,11 @@ abstract class Model
         return null;
     }
 
+    public function getErrors(): array | null
+    {
+      return $this->errors;
+    }
+
     public function addError(string $index, string $value): void
     {
         $this->errors[$index] = $value;
