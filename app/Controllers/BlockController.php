@@ -37,10 +37,10 @@ class BlockController extends Controller
             if ($block->save()) {
                 echo json_encode(['success' => 'Criado com sucesso']);
             } else {
-                echo json_encode(['error' => 'Erro ao salvar']);
+                echo json_encode(['error' => $block->getErrors()]);
             }
         } else {
-            echo json_encode(['error' => 'Erro ao criar']);
+            echo json_encode(['error' => $block->getErrors()]);
         }
     }
 
@@ -55,8 +55,8 @@ class BlockController extends Controller
         }
 
         $response = [
-        'id' => $block->id,
-        'name' => $block->name,
+          'id' => $block->id,
+          'name' => $block->name,
         ];
 
         echo json_encode(['data' => $response]);
@@ -72,8 +72,14 @@ class BlockController extends Controller
             return;
         }
         $block->name = $body['name'];
-        $block->save();
-        echo json_encode(['success' => $block->name]);
+
+
+        if($block->isValid()){
+          $block->save();
+          echo json_encode(['success' => $block->name]);
+        } else {
+          echo json_encode(['error' => $block->getErrors()]);
+        }
     }
 
     public function destroy(Request $request): void

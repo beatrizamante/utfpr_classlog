@@ -9,7 +9,6 @@ use Core\Http\Request;
 use Lib\Authentication\Auth;
 
 use function array_map;
-use function array_push;
 use function json_encode;
 
 class UsersController extends Controller
@@ -22,25 +21,26 @@ class UsersController extends Controller
 
         if ($user->isValid()) {
             if ($user->save()) {
-                echo json_encode(['success' => 'Criado com sucesso']);
+                echo json_encode(['success' => 'Usuário criado com sucesso']);
             } else {
-                echo json_encode(['error' => 'Erro ao salvar user']);
+                echo json_encode(['error' => $user->getErrors()]);
             }
         } else {
-            echo json_encode(['error' => 'Erro ao criar user']);
+            echo json_encode(['error' => $user->getErrors()]);
         }
+
+
     }
 
     public function login(Request $request): void
     {
-
         $params = $request->getBody();
         $user = User::findByUniversityRegistry($params['university_registry']);
         if ($user && $user->authenticate($params['password'])) {
             Auth::login($user);
             echo json_encode(['success' => 'Logado com sucesso']);
         } else {
-            echo json_encode(['error' => 'RA ou senha errados']);
+            echo json_encode(['error' => $user->getErrors()]);
         }
     }
 
