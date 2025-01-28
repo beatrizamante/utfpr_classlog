@@ -2,15 +2,11 @@
 
 namespace App\Controllers;
 
-use App\Enums\RolesEnum;
-use App\Models\User;
 use App\Models\UserSubjects;
 use Core\Http\Controllers\Controller;
 use Core\Http\Request;
-use Lib\Authentication\Auth;
 
 use function array_map;
-use function array_push;
 use function json_encode;
 
 class UserSubjectsController extends Controller
@@ -20,9 +16,17 @@ class UserSubjectsController extends Controller
         $userSubjects = UserSubjects::all();
         $userSubjectsArray = array_map(function ($userSubject) {
             return [
-            'id' => $userSubject->id,
-            'user_id' => $userSubject->user_id,
-            'subject_id' => $userSubject->subject_id,
+              'id' => $userSubject->id,
+              'user' => [
+                'user_id' => $userSubject->user->id,
+                'user_name' => $userSubject->user->name,
+
+              ],
+              'subject' => [
+                'subject_id' => $userSubject->subject->id,
+                'subject_name' => $userSubject->subject->name,
+                'subject_semester' => $userSubject->subject->semester,
+              ]
             ];
         }, $userSubjects);
 
@@ -30,13 +34,31 @@ class UserSubjectsController extends Controller
     }
     public function addSubjectToProfessor(Request $request): void
     {
+
         $params = $request->getBody();
+
         $userSubject = new UserSubjects($params);
+        if ($userSubject->isValid()) {
+          if ($userSubject->save()) {
+            $array =  [
+              'id' => $userSubject->id,
+              'user_id' => $userSubject->user_id,
+              'subject_id' => $userSubject->subject_id,
+            ];
 
-        $userSubject->isValid();
+            echo json_encode(['success' => $array]);
+          } else {
+            echo json_encode(['error' => 'Erro ao salvar']);
+          }
+        } else {
+          echo json_encode(['error' => $userSubject->errors]);
+        }
+    }
 
-        $userSubject->save();
-
-        echo $userSubject;
+    public function delete(Request $request): void
+    {
+      $params = $request->getParams();
+      $subject = UserSubjects::findById($params['id']);
+      $subject->destroy();
     }
 }

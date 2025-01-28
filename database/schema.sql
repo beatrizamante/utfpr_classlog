@@ -9,6 +9,7 @@ DROP TABLE IF EXISTS blocks;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS roles;
 DROP TABLE IF EXISTS profile_images;
+DROP TABLE IF EXISTS schedule_exceptions;
 
 CREATE TABLE `roles` (
                        `id` INT AUTO_INCREMENT PRIMARY KEY,
@@ -50,19 +51,39 @@ CREATE TABLE `subjects` (
                           `semester` VARCHAR(255)
 );
 
-CREATE TABLE `schedules` (
-                           `id` INT AUTO_INCREMENT PRIMARY KEY,
-                           `start_time` TIME NOT NULL,
-                           `end_time` TIME NOT NULL,
-                           `day_of_week` ENUM('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday') NOT NULL
-);
+
 
 CREATE TABLE `user_subjects` (
                                `id` INT AUTO_INCREMENT PRIMARY KEY,
                                `subject_id` INT NOT NULL,
                                `user_id` INT NOT NULL,
-                               CONSTRAINT fk_user_subjects FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+                               CONSTRAINT fk_user_subjects_user_id FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
                                CONSTRAINT fk_subject FOREIGN KEY (`subject_id`) REFERENCES `subjects` (`id`)
+);
+
+CREATE TABLE `schedules` (
+                           `id` INT AUTO_INCREMENT PRIMARY KEY,
+                           `start_time` TIME NOT NULL,
+                           `end_time` TIME NOT NULL,
+                           `day_of_week` VARCHAR(255) NULL,
+                           `default_day` BOOLEAN NULL,
+                           `exceptional_day` DATE NULL,
+                           `user_subject_id` INT NOT NULL,
+                           `classroom_id` INT NOT NULL,
+                           CONSTRAINT fk_user_subjects FOREIGN KEY (`user_subject_id`) REFERENCES `user_subjects` (`id`),
+                           CONSTRAINT fk_classroom_schedules FOREIGN KEY (`classroom_id`) REFERENCES `classrooms` (`id`)
+);
+
+CREATE TABLE `schedule_exceptions` (
+                           `id` INT AUTO_INCREMENT PRIMARY KEY,
+                           `date` DATE NOT NULL,
+                           `is_canceled` BOOLEAN NOT NULL,
+                           `schedule_id` INT NOT NULL,
+                           `custom_user_subject_id` INT NOT NULL,
+                           `custom_classroom_id` INT NOT NULL,
+                           CONSTRAINT fk_schedule_id FOREIGN KEY (`schedule_id`) REFERENCES `schedules` (`id`),
+                           CONSTRAINT fk_custom_user_subject_id FOREIGN KEY (`custom_user_subject_id`) REFERENCES `user_subjects` (`id`),
+                           CONSTRAINT fk_custom_classroom_id FOREIGN KEY (`custom_classroom_id`) REFERENCES `classrooms` (`id`)
 );
 
 CREATE TABLE `reservations` (
