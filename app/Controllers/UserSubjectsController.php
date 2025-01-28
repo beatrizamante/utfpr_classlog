@@ -39,26 +39,26 @@ class UserSubjectsController extends Controller
 
         $userSubject = new UserSubjects($params);
         if ($userSubject->isValid()) {
-          if ($userSubject->save()) {
-            $array =  [
-              'id' => $userSubject->id,
-              'user_id' => $userSubject->user_id,
-              'subject_id' => $userSubject->subject_id,
-            ];
+            if ($userSubject->save()) {
+                $array =  [
+                'id' => $userSubject->id,
+                'user_id' => $userSubject->user_id,
+                'subject_id' => $userSubject->subject_id,
+                ];
 
-            echo json_encode(['success' => $array]);
-          } else {
-            echo json_encode(['error' => 'Erro ao salvar']);
-          }
+                echo json_encode(['success' => $array]);
+            } else {
+                echo json_encode(['error' => 'Erro ao salvar']);
+            }
         } else {
-          echo json_encode(['error' => $userSubject->errors]);
+            echo json_encode(['error' => $userSubject->errors]);
         }
     }
 
     public function delete(Request $request): void
     {
-      $params = $request->getParams();
-      $subject = UserSubjects::findById($params['id']);
-      $subject->destroy();
+        $params = $request->getParams();
+        $subject = UserSubjects::findById($params['id']);
+        $subject->destroy();
     }
 }

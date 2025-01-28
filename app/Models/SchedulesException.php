@@ -5,7 +5,6 @@ namespace App\Models;
 use Lib\Validations;
 use Core\Database\ActiveRecord\Model;
 
-
 /**
  * @property int $id
  * @property string $date
@@ -19,26 +18,32 @@ use Core\Database\ActiveRecord\Model;
 class SchedulesException extends Model
 {
     protected static string $table = 'schedule_exceptions';
-    protected static array $columns = ['date', 'is_canceled', 'schedule_id', 'custom_user_subject_id', 'custom_classroom_id'];
+    protected static array $columns = [
+      'date',
+      'is_canceled',
+      'schedule_id',
+      'custom_user_subject_id',
+      'custom_classroom_id'
+    ];
 
     public function validates(): void
     {
-      Validations::notEmpty('date', $this);
-      Validations::notEmpty('is_canceled', $this);
-      Validations::notEmpty('schedule_id', $this);
+        Validations::notEmpty('date', $this);
+        Validations::notEmpty('is_canceled', $this);
+        Validations::notEmpty('schedule_id', $this);
     }
 
     public function schedule()
     {
-      return $this->belongsTo(Schedules::class, 'schedule_id');
+        return $this->belongsTo(Schedules::class, 'schedule_id');
     }
     public function customUserSubject()
     {
-      return $this->hasMany(UserSubjects::class, 'custom_user_subject_id');
+        return $this->hasMany(UserSubjects::class, 'custom_user_subject_id');
     }
 
     public function classroom()
     {
-      return $this->hasMany(Classroom::class, 'custom_classroom_id');
+        return $this->hasMany(Classroom::class, 'custom_classroom_id');
     }
 }
