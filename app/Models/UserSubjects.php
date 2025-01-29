@@ -24,6 +24,7 @@ class UserSubjects extends Model
     {
         Validations::notEmpty('user_id', $this);
         Validations::notEmpty('subject_id', $this);
+        Validations::uniqueness('subject_id', $this);
     }
 
     public function user(): BelongsTo
