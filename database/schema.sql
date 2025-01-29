@@ -65,22 +65,25 @@ CREATE TABLE `schedules` (
                            `id` INT AUTO_INCREMENT PRIMARY KEY,
                            `start_time` TIME NOT NULL,
                            `end_time` TIME NOT NULL,
-                           `day_of_week` VARCHAR(255) NULL,
+                           `day_of_week` INT NOT NULL,
                            `default_day` BOOLEAN NULL,
-                           `exceptional_day` DATE NULL,
+                           `exceptional_day` BOOLEAN NULL,
+                           `date` DATE NULL,
+                           `is_canceled` BOOLEAN NOT NULL,
                            `user_subject_id` INT NOT NULL,
                            `classroom_id` INT NOT NULL,
                            CONSTRAINT fk_user_subjects FOREIGN KEY (`user_subject_id`) REFERENCES `user_subjects` (`id`),
                            CONSTRAINT fk_classroom_schedules FOREIGN KEY (`classroom_id`) REFERENCES `classrooms` (`id`)
+
 );
 
 CREATE TABLE `schedule_exceptions` (
                            `id` INT AUTO_INCREMENT PRIMARY KEY,
                            `date` DATE NOT NULL,
                            `is_canceled` BOOLEAN NOT NULL,
-                           `schedule_id` INT NOT NULL,
-                           `custom_user_subject_id` INT NOT NULL,
-                           `custom_classroom_id` INT NOT NULL,
+                           `schedule_id` INT NULL,
+                           `custom_user_subject_id` INT NULL,
+                           `custom_classroom_id` INT NULL,
                            CONSTRAINT fk_schedule_id FOREIGN KEY (`schedule_id`) REFERENCES `schedules` (`id`),
                            CONSTRAINT fk_custom_user_subject_id FOREIGN KEY (`custom_user_subject_id`) REFERENCES `user_subjects` (`id`),
                            CONSTRAINT fk_custom_classroom_id FOREIGN KEY (`custom_classroom_id`) REFERENCES `classrooms` (`id`)

@@ -2,8 +2,11 @@
 
 namespace App\Models;
 
+use Core\Database\ActiveRecord\BelongsTo;
+use Core\Database\Database;
 use Lib\Validations;
 use Core\Database\ActiveRecord\Model;
+use PDO;
 
 /**
  * @property int $id
@@ -11,6 +14,8 @@ use Core\Database\ActiveRecord\Model;
  * @property string $end_time
  * @property string $day_of_week
  * @property boolean $default_day
+ * @property string $date
+ * @property boolean $is_canceled
  * @property int $user_subject_id
  * @property int $classroom_id
  */
@@ -26,7 +31,9 @@ class Schedules extends Model
       'default_day',
       'user_subject_id',
       'classroom_id',
-      'exceptional_day'
+      'exceptional_day',
+      'date',
+      'is_canceled',
     ];
 
     public function validates(): void
@@ -36,12 +43,27 @@ class Schedules extends Model
         Validations::notEmpty('user_subject_id', $this);
     }
 
-    public function user()
+    public function classroom(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'user_subject_id');
+        return $this->belongsTo(ClassRoom::class, 'classroom_id');
     }
-    public function classroom()
+    public function userSubject(): BelongsTo
     {
-        return $this->hasMany(ClassRoom::class, 'classroom_id');
+      return $this->belongsTo(UserSubjects::class, 'user_subject_id');
+    }
+
+    public static function defaultSchedules()
+    {
+      $sql = "SELECT * FROM schedules WHERE date IS NULL";
+      $pdo = Database::getDatabaseConn();
+      $stmt = $pdo->prepare($sql);
+      $stmt->execute();
+      $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+      $models = [];
+      foreach ($rows as $row) {
+        $models[] = new static($row);
+      }
+      return $models;
     }
 }
