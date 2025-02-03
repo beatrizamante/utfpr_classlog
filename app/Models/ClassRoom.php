@@ -6,8 +6,8 @@ use Core\Database\ActiveRecord\BelongsTo;
 use Core\Database\ActiveRecord\HasMany;
 use Lib\Validations;
 use Core\Database\ActiveRecord\Model;
-
 use PHPStan\Parallel\Schedule;
+
 use function array_map;
 
 /**
@@ -36,6 +36,6 @@ class ClassRoom extends Model
 
     public function schedules(): HasMany
     {
-      return $this->hasMany(Schedule::class, 'classroom_id');
+        return $this->hasMany(Schedule::class, 'classroom_id');
     }
 }

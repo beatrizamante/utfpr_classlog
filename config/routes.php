@@ -50,6 +50,9 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::get('/schedules', [SchedulesController::class, 'index'])->name('schedules.index');
+    Route::post('/schedules/cancel', [SchedulesController::class, 'creatreCancelSchedule'])->name('schedules.cancel');
+    Route::delete('/schedules/cancel/{id}', [SchedulesController::class, 'deleteCancelSchedule'])->name('schedules.cancel.delete');
+    Route::post('/schedules/change', [SchedulesController::class, 'roomChange'])->name('schedules.post');
 
     Route::get('/schedules/exceptions', [SchedulesExceptionController::class, 'index'])
       ->name('schedules.exceptions.index');
