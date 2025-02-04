@@ -22,9 +22,9 @@ class SubjectController extends Controller
         $allSubjects = Subject::all();
         $classRoomsArray = array_map(function ($subject) {
             return [
-            'id' => $subject->id,
-              'name' => $subject->name,
-              'semester' => $subject->semester,
+                  'id' => $subject->id,
+                  'name' => $subject->name,
+                  'semester' => $subject->semester,
             ];
         }, $allSubjects);
 

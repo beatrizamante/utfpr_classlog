@@ -57,10 +57,10 @@ class ClassRoomController extends Controller
         }
 
         $response = [
-        'id' => $classroom->id,
-        'block_id' => $classroom->block_id,
-        'block_name' => $classroom->block->name,
-        'name' => $classroom->name,
+          'id' => $classroom->id,
+          'block_id' => $classroom->block_id,
+          'block_name' => $classroom->block->name,
+          'name' => $classroom->name,
         ];
 
         echo json_encode(['data' => $response]);
