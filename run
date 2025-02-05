@@ -57,7 +57,7 @@ function phpcbf {
 
 function phpstan {
    TEST_PATH="${@:-}"
-   docker compose run --rm php ./vendor/bin/phpstan ${TEST_PATH}
+   docker compose run --rm php ./vendor/bin/phpstan ${TEST_PATH} --memory-limit=256M
 }
 
 function git:clean:branchs {
