@@ -40,6 +40,15 @@ class BlockTest extends TestCase
         $this->assertEquals('B', $this->block->name);
     }
 
+    public function test_shouldnt_crete_block_with_duplicate_name(): void
+    {
+        $block2 = new Block([
+        'name' => 'H',
+        ]);
+        $block2->save();
+        $this->assertCount(1, Block::all());
+    }
+
     public function test_should_delete_block(): void
     {
         $this->block->destroy();

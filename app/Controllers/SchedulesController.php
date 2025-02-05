@@ -132,15 +132,15 @@ class SchedulesController extends Controller
         $schedule = Schedules::findById($scheduleId);
         $dayOfWeek = (int) date('N', strtotime($date));
         $changeSchedule = new Schedules([
-        'start_time' => $startTime,
-        'end_time' => $endTime,
-        'default_day' => 0,
-        'classroom_id' => $classroomId,
-        'user_subject_id' => $schedule->user_subject_id,
-        'day_of_week' => $dayOfWeek,
-        'is_canceled' => 0,
-        'date' => $date,
-        'exceptional_day' => 1,
+          'start_time' => $startTime,
+          'end_time' => $endTime,
+          'default_day' => 0,
+          'classroom_id' => $classroomId,
+          'user_subject_id' => $schedule->user_subject_id,
+          'day_of_week' => $dayOfWeek,
+          'is_canceled' => 0,
+          'date' => $date,
+          'exceptional_day' => 1,
         ]);
         if ($this->validatesCancelDateConflict($changeSchedule)) {
             if (!$this->validatesRoomChangeDateConflict($changeSchedule)) {
@@ -162,7 +162,7 @@ class SchedulesController extends Controller
         $subject->destroy();
     }
 
-    public function validatesDateConflict($schedule)
+    public function validatesDateConflict(Schedules $schedule): bool
     {
         $sql = "SELECT * FROM schedules WHERE day_of_week = :day_of_week
                           AND start_time <= :end_time
@@ -180,7 +180,7 @@ class SchedulesController extends Controller
         return  count($rows) > 0;
     }
 
-    public function validatesCancelDateConflict($schedule)
+    public function validatesCancelDateConflict(Schedules $schedule): bool
     {
         $sql = "SELECT * FROM schedules WHERE date = :date
                           AND start_time <= :end_time
@@ -199,7 +199,7 @@ class SchedulesController extends Controller
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return  count($rows) > 0;
     }
-    public function validatesRoomChangeDateConflict($schedule)
+    public function validatesRoomChangeDateConflict(Schedules $schedule): bool
     {
         $sql = "SELECT * FROM schedules WHERE date = :date
                           AND start_time <= :end_time

@@ -77,18 +77,6 @@ CREATE TABLE `schedules` (
 
 );
 
-CREATE TABLE `schedule_exceptions` (
-                           `id` INT AUTO_INCREMENT PRIMARY KEY,
-                           `date` DATE NOT NULL,
-                           `is_canceled` BOOLEAN NOT NULL,
-                           `schedule_id` INT NULL,
-                           `custom_user_subject_id` INT NULL,
-                           `custom_classroom_id` INT NULL,
-                           CONSTRAINT fk_schedule_id FOREIGN KEY (`schedule_id`) REFERENCES `schedules` (`id`),
-                           CONSTRAINT fk_custom_user_subject_id FOREIGN KEY (`custom_user_subject_id`) REFERENCES `user_subjects` (`id`),
-                           CONSTRAINT fk_custom_classroom_id FOREIGN KEY (`custom_classroom_id`) REFERENCES `classrooms` (`id`)
-);
-
 CREATE TABLE `reservations` (
                               `id` INT AUTO_INCREMENT PRIMARY KEY,
                               `schedule_id` INT NOT NULL,

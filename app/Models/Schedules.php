@@ -19,9 +19,12 @@ use function strtotime;
  * @property string $day_of_week
  * @property boolean $default_day
  * @property string $date
+ * @property string $exceptional_day
  * @property boolean $is_canceled
  * @property int $user_subject_id
  * @property int $classroom_id
+ * @property UserSubjects $userSubject
+ * @property ClassRoom $classroom
  */
 
 
@@ -55,8 +58,11 @@ class Schedules extends Model
     {
         return $this->belongsTo(UserSubjects::class, 'user_subject_id');
     }
-
-    public static function defaultSchedules()
+  /**
+   *
+   * @return array<Schedules> Um array de objetos Schedules.
+   */
+    public static function defaultSchedules(): array
     {
         $sql = "SELECT * FROM schedules WHERE date IS NULL";
         $pdo = Database::getDatabaseConn();
@@ -71,12 +77,17 @@ class Schedules extends Model
         return $models;
     }
 
-    public static function canceledSchedules($date)
+  /**
+   *
+   * @return array<Schedules> Um array de objetos Schedules.
+   */
+    public static function canceledSchedules(string $date): array
     {
 
         $startOfWeek = date('Y-m-d', strtotime('monday this week', strtotime($date)));
         $endOfWeek = date('Y-m-d', strtotime('sunday this week', strtotime($date)));
-        $sql = "SELECT * FROM schedules WHERE (date BETWEEN :startOfWeek AND :endOfWeek)  AND (is_canceled = 1 OR exceptional_day = 1)";
+        $sql = "SELECT * FROM schedules WHERE (date BETWEEN :startOfWeek AND :endOfWeek)
+                          AND (is_canceled = 1 OR exceptional_day = 1)";
         $pdo = Database::getDatabaseConn();
         $stmt = $pdo->prepare($sql);
         $stmt->bindParam(':startOfWeek', $startOfWeek);
@@ -90,13 +101,16 @@ class Schedules extends Model
         }
         return $models;
     }
+  /**
+   *
+   * @return array<Schedules> Um array de objetos Schedules.
+   */
 
-    public static function withCancelAndSubstitutionsCurrentWeek($date)
+    public static function withCancelAndSubstitutionsCurrentWeek(string $date): array
     {
         $canceleds = (self::canceledSchedules($date));
         $defaults = self::defaultSchedules();
 
-        $schedules = [];
         $indexedSchedules = [];
 
         foreach ($canceleds as $canceled) {
