@@ -3,15 +3,11 @@
 namespace App\Controllers;
 
 use App\Models\Block;
-use App\Models\User;
 use Core\Http\Controllers\Controller;
 use Core\Http\Request;
-use Lib\Authentication\Auth;
 
 use function is_null;
 use function json_encode;
-use function print_r;
-use function toString;
 
 class BlockController extends Controller
 {
@@ -21,7 +17,7 @@ class BlockController extends Controller
         $blocksArray = array_map(function ($block) {
             return [
             'id' => $block->id,
-            'name' => $block->attributes['name'],
+            'name' => $block->name,
             ];
         }, $allBlocks);
 

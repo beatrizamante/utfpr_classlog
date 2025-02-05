@@ -13,9 +13,8 @@ use function array_map;
 /**
  * @property int $id
  * @property string $name
- * @property string $university_registry
- * @property string $encrypted_password
- * @property int $role_id
+ * @property int $block_id
+ * @property Block $block
  */
 class ClassRoom extends Model
 {

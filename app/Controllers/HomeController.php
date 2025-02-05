@@ -19,7 +19,7 @@ use function strtotime;
 
 class HomeController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): void
     {
 
         $params = $request->getParams();

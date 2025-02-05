@@ -10,10 +10,8 @@ use function array_map;
 
 /**
  * @property int $id
+ * @property int $semester
  * @property string $name
- * @property string $university_registry
- * @property string $encrypted_password
- * @property int $role_id
  */
 class Subject extends Model
 {
