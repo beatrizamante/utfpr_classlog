@@ -18,7 +18,8 @@ CREATE TABLE `roles` (
 
 CREATE TABLE `blocks` (
                         `id` INT AUTO_INCREMENT PRIMARY KEY,
-                        `name` VARCHAR(255) NOT NULL
+                        `name` VARCHAR(255) NOT NULL,
+                        `photo` VARCHAR(255)
 );
 
 CREATE TABLE `users` (

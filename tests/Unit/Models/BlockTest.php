@@ -46,7 +46,7 @@ class BlockTest extends TestCase
         'name' => 'H',
         ]);
         $block2->save();
-        $this->assertCount(1, Block::all());
+        $this->assertCount(2, Block::all());
     }
 
     public function test_should_delete_block(): void

@@ -7,7 +7,6 @@ use App\Controllers\ClassRoomController;
 use App\Controllers\DashboardController;
 use App\Controllers\HomeController;
 use App\Controllers\SchedulesController;
-use App\Controllers\SchedulesExceptionController;
 use App\Controllers\SubjectController;
 use App\Controllers\UsersController;
 use App\Controllers\UserSubjectsController;
@@ -36,6 +35,8 @@ Route::middleware('auth')->group(function () {
     Route::middleware('role:admin')->group(function () {
         Route::post('/blocks', [BlockController::class, 'create'])
           ->name('blocks.create');
+      Route::post('/blocks/image-update/{id}', [BlockController::class, 'imageUpdate'])
+        ->name('blocks.image');
         Route::put('/blocks/{id}', [BlockController::class, 'update'])
           ->name('blocks.update');
         Route::delete('/blocks/{id}', [BlockController::class, 'destroy'])
@@ -76,10 +77,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/schedules/change', [SchedulesController::class, 'roomChange'])
       ->name('schedules.post');
 
-    Route::get('/schedules/exceptions', [SchedulesExceptionController::class, 'index'])
-      ->name('schedules.exceptions.index');
-    Route::post('/schedules/exceptions', [SchedulesExceptionController::class, 'create'])
-      ->name('schedules.exceptions.create');
+  Route::get('/schedules/exceptions', [SchedulesController::class, 'exceptions'])
+    ->name('schedules.exceptions');
 
 
     Route::get('/blocks/{id}', [BlockController::class, 'show'])

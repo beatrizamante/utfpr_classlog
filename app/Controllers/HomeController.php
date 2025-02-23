@@ -44,7 +44,8 @@ class HomeController extends Controller
             'classroom_id' => $schedule->classroom->id,
             'classroom_name' => $schedule->classroom->name,
             'block_id' => $schedule->classroom->block->id,
-            'block_name' => $schedule->classroom->block->name,
+              'block_name' => $schedule->classroom->block->name,
+              'block_photo' => $schedule->classroom->block->photo()->path(),
             'date' => $schedule->date,
             'is_canceled' => $schedule->is_canceled,
             ];
