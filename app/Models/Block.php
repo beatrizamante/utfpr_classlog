@@ -27,6 +27,6 @@ class Block extends Model
 
     public function photo(): ImageUpload
     {
-      return new ImageUpload($this);
+        return new ImageUpload($this);
     }
 }

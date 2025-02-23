@@ -35,7 +35,7 @@ Route::middleware('auth')->group(function () {
     Route::middleware('role:admin')->group(function () {
         Route::post('/blocks', [BlockController::class, 'create'])
           ->name('blocks.create');
-      Route::post('/blocks/image-update/{id}', [BlockController::class, 'imageUpdate'])
+        Route::post('/blocks/image-update/{id}', [BlockController::class, 'imageUpdate'])
         ->name('blocks.image');
         Route::put('/blocks/{id}', [BlockController::class, 'update'])
           ->name('blocks.update');
@@ -77,7 +77,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/schedules/change', [SchedulesController::class, 'roomChange'])
       ->name('schedules.post');
 
-  Route::get('/schedules/exceptions', [SchedulesController::class, 'exceptions'])
+    Route::get('/schedules/exceptions', [SchedulesController::class, 'exceptions'])
     ->name('schedules.exceptions');
 
 
