@@ -18,6 +18,7 @@ class BlockController extends Controller
             return [
             'id' => $block->id,
             'name' => $block->name,
+            'photo' => $block->photo()->path(),
             ];
         }, $allBlocks);
 
@@ -26,11 +27,16 @@ class BlockController extends Controller
 
     public function create(Request $request): void
     {
+        $image = ($_FILES['photo'] ?? null);
         $params = $request->getBody();
+        unset($params['PHPSESSID']);
         $block = new Block($params);
 
         if ($block->isValid()) {
             if ($block->save()) {
+                if (!is_null($image)) {
+                    $block->photo()->update($image);
+                }
                 echo json_encode(['success' => 'Criado com sucesso']);
             } else {
                 echo json_encode(['error' => $block->getErrors()]);
@@ -53,6 +59,7 @@ class BlockController extends Controller
         $response = [
           'id' => $block->id,
           'name' => $block->name,
+          'photo' => $block->photo()->path(),
         ];
 
         echo json_encode(['data' => $response]);
@@ -60,6 +67,8 @@ class BlockController extends Controller
 
     public function update(Request $request): void
     {
+
+
         $params = $request->getParams();
         $body = $request->getBody();
         $block = Block::findById($params['id']);
@@ -67,15 +76,28 @@ class BlockController extends Controller
             echo json_encode(['error' => 'bloco não encontrado']);
             return;
         }
-        $block->name = $body['name'];
-
-
-        if($block->isValid()){
-          $block->save();
-          echo json_encode(['success' => $block->name]);
-        } else {
-          echo json_encode(['error' => $block->getErrors()]);
+        if (isset($body['name'])) {
+            $block->name = $body['name'];
         }
+        if ($block->isValid()) {
+            $block->save();
+
+            echo json_encode(['success' => $block->name]);
+        } else {
+            echo json_encode(['error' => $block->getErrors()]);
+        }
+    }
+
+    public function imageUpdate(Request $request): void
+    {
+        $params = $request->getParams();
+        $block = Block::findById($params['id']);
+        $image = ($_FILES['photo']);
+        if (!is_null($image)) {
+            $block->photo()->update($image);
+        }
+
+        echo json_encode(['success' => $block->photo()->path()]);
     }
 
     public function destroy(Request $request): void

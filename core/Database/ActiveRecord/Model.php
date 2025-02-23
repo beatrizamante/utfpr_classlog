@@ -128,7 +128,10 @@ abstract class Model
         return null;
     }
 
-    public function getErrors(): array | null
+  /**
+   * @return array<string>|null
+   */
+    public function getErrors(): ?array
     {
       return $this->errors;
     }

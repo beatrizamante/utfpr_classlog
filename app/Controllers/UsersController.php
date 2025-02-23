@@ -28,8 +28,6 @@ class UsersController extends Controller
         } else {
             echo json_encode(['error' => $user->getErrors()]);
         }
-
-
     }
 
     public function login(Request $request): void

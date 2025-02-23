@@ -43,6 +43,34 @@ class SchedulesController extends Controller
 
         echo json_encode($schedulesArray);
     }
+
+    public function exceptions(Request $request): void
+    {
+
+        $params = $request->getParams();
+        $date = date('Y-m-d');
+        if (isset($params['date'])) {
+            $date = $params['date'];
+        }
+
+        $allSchedules = Schedules::canceledSchedules($date);
+        $schedulesArray = array_map(function ($schedule) {
+            return [
+            'id' => $schedule->id,
+            'start_time' => $schedule->start_time,
+            'end_time' => $schedule->end_time,
+            'day_of_week' => $schedule->day_of_week,
+            'default_day' => $schedule->default_day,
+            'exceptional_day' => $schedule->exceptional_day,
+            'user_subject_id' => $schedule->user_subject_id,
+            'classroom_id' => $schedule->classroom_id,
+            'date' => $schedule->date,
+            'is_canceled' => $schedule->is_canceled,
+            ];
+        }, $allSchedules);
+
+        echo json_encode($schedulesArray);
+    }
     public function create(Request $request): void
     {
         $params = $request->getBody();
@@ -79,6 +107,7 @@ class SchedulesController extends Controller
         $id = $params['id'];
         $date = $params['date'];
         $schedule = Schedules::findById($id);
+
 
         if ($this->currentUser()->id != $schedule->userSubject->user->id) {
             if ($this->currentUser()->roleName() != 'admin') {
