@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Enums\RolesEnum;
+use App\Models\ClassRoom;
 use App\Models\Roles;
 use App\Models\Schedules;
 use App\Models\Subject;
@@ -38,6 +39,7 @@ class SchedulesController extends Controller
               'classroom_id' => $schedule->classroom_id,
               'date' => $schedule->date,
               'is_canceled' => $schedule->is_canceled,
+              'block_id' => $schedule->block_id,
             ];
         }, $allSchedules);
 
@@ -106,6 +108,7 @@ class SchedulesController extends Controller
         $endTime = $params['end_time'];
         $startTime = DateTime::createFromFormat('H:i', $startTime);
         $endTime = DateTime::createFromFormat('H:i', $endTime);
+        $classroom = ClassRoom::findById($params['classroom_id']);
         try {
             $schedule = new Schedules([
             'start_time' => $startTime->format('H:i'),
@@ -115,6 +118,7 @@ class SchedulesController extends Controller
             'user_subject_id' => $params['user_subject_id'],
               'day_of_week' => $params['day_of_week'],
               'is_canceled' => 0,
+              'block_id'=> $classroom->block->id,
 
             ]);
             if (!$this->validatesDateConflict($schedule)) {
@@ -146,12 +150,13 @@ class SchedulesController extends Controller
         'start_time' => $schedule->start_time,
         'end_time' => $schedule->end_time,
         'default_day' => 0,
-        'classroom_id' => $schedule->classroom_id,
+          'classroom_id' => $schedule->classroom_id,
+          'block_id' => $schedule->block_id,
         'user_subject_id' => $schedule->user_subject_id,
         'day_of_week' => $schedule->day_of_week,
         'is_canceled' => 1,
         'date' => $date,
-        'exceptional_day' => 0
+          'exceptional_day' => 0,
         ]);
         if (!$this->validatesCancelDateConflict($cancelSchedule)) {
             $cancelSchedule->save();
@@ -188,11 +193,14 @@ class SchedulesController extends Controller
 
         $schedule = Schedules::findById($scheduleId);
         $dayOfWeek = (int) date('N', strtotime($date));
-        $changeSchedule = new Schedules([
+      $classroom = ClassRoom::findById($classroomId);
+
+      $changeSchedule = new Schedules([
           'start_time' => $startTime,
           'end_time' => $endTime,
           'default_day' => 0,
           'classroom_id' => $classroomId,
+          'block_id' => $classroom->block->id,
           'user_subject_id' => $schedule->user_subject_id,
           'day_of_week' => $dayOfWeek,
           'is_canceled' => 0,

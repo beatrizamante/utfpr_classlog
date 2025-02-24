@@ -24,6 +24,8 @@ use Core\Router\Route;
 // Authentication
 Route::get('/', [HomeController::class, 'index'])
   ->name('root');
+Route::get('/blocks-index', [HomeController::class, 'indexBlocks'])
+  ->name('root.blocks');
 Route::post('/register', [UsersController::class, 'register'])
   ->name('users.register');
 Route::post('/login', [UsersController::class, 'login'])

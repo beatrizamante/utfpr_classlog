@@ -176,6 +176,7 @@ class SchedulesPopulate
     ];
 
     foreach ($schedulesData as $data) {
+      $classroom = ClassRoom::findById($data["classroom"]->id);
       $schedule = new Schedules([
         "classroom_id" => $data["classroom"]->id,
         "user_subject_id" => $data["user_subject"]->id,
@@ -183,7 +184,8 @@ class SchedulesPopulate
         "end_time" => $data["end_time"],
         "default_day" => 1,
         "day_of_week" => $data["day_of_week"],
-        "is_canceled" => 0
+        "is_canceled" => 0,
+        "block_id" => $classroom->block->id,
       ]);
       $schedule->save();
     }

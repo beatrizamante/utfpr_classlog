@@ -23,6 +23,7 @@ use function strtotime;
  * @property boolean $is_canceled
  * @property int $user_subject_id
  * @property int $classroom_id
+ * @property int $block_id
  * @property UserSubjects $userSubject
  * @property ClassRoom $classroom
  */
@@ -38,6 +39,7 @@ class Schedules extends Model
       'default_day',
       'user_subject_id',
       'classroom_id',
+      'block_id',
       'exceptional_day',
       'date',
       'is_canceled',
@@ -76,6 +78,58 @@ class Schedules extends Model
         }
         return $models;
     }
+
+  /**
+   *
+   * @return array<Schedules> Um array de objetos Schedules.
+   */
+
+
+  public static function defaultSchedulesBlock($blockId): array
+  {
+    $sql = "SELECT * FROM schedules WHERE date IS NULL AND block_id = :block_id";
+    $pdo = Database::getDatabaseConn();
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindParam(':block_id', $blockId);
+
+    $stmt->execute();
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $models = [];
+    foreach ($rows as $row) {
+      $models[] = new static($row);
+    }
+    return $models;
+  }
+  /**
+   *
+   * @return array<Schedules> Um array de objetos Schedules.
+   */
+
+
+  public static function canceledSchedulesBlocks(string $date, int $blockId): array
+  {
+
+    $startOfWeek = date('Y-m-d', strtotime('monday this week', strtotime($date)));
+    $endOfWeek = date('Y-m-d', strtotime('sunday this week', strtotime($date)));
+    $sql = "SELECT * FROM schedules WHERE (date BETWEEN :startOfWeek AND :endOfWeek)
+                          AND (is_canceled = 1 OR exceptional_day = 1)
+                          AND (block_id = :block_id)";
+    $pdo = Database::getDatabaseConn();
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindParam(':block_id', $blockId);
+    $stmt->bindParam(':startOfWeek', $startOfWeek);
+    $stmt->bindParam(':endOfWeek', $endOfWeek);
+    $stmt->execute();
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $models = [];
+    foreach ($rows as $row) {
+      $models[] = new static($row);
+    }
+    return $models;
+  }
+
 
   /**
    *
@@ -135,4 +189,39 @@ class Schedules extends Model
         }
         return array_values($indexedSchedules);
     }
+
+  /**
+   *
+   * @return array<Schedules> Um array de objetos Schedules.
+   */
+
+  public static function withCancelAndSubstitutionsCurrentWeekByBlock(string $date, int $blockId): array
+  {
+    $defaults = self::defaultSchedulesBlock($blockId);
+    $canceleds = (self::canceledSchedulesBlocks($date, 1));
+
+    $indexedSchedules = [];
+
+    foreach ($canceleds as $canceled) {
+      $key = "{$canceled->day_of_week}-{$canceled->classroom_id}-{$canceled->start_time}-{$canceled->end_time}";
+
+      if ($canceled->exceptional_day == 1) {
+        $indexedSchedules[$key] = $canceled;
+        continue;
+      }
+
+      if ($canceled->is_canceled == 1 && !isset($indexedSchedules[$key])) {
+        $indexedSchedules[$key] = $canceled;
+      }
+    }
+
+    foreach ($defaults as $default) {
+      $key = "{$default->day_of_week}-{$default->classroom_id}-{$default->start_time}-{$default->end_time}";
+
+      if (!isset($indexedSchedules[$key])) {
+        $indexedSchedules[$key] = $default;
+      }
+    }
+    return array_values($indexedSchedules);
+  }
 }

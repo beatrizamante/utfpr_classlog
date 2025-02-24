@@ -73,8 +73,10 @@ CREATE TABLE `schedules` (
                            `is_canceled` BOOLEAN NOT NULL,
                            `user_subject_id` INT NOT NULL,
                            `classroom_id` INT NOT NULL,
+                           `block_id` INT NOT NULL,
                            CONSTRAINT fk_user_subjects FOREIGN KEY (`user_subject_id`) REFERENCES `user_subjects` (`id`),
-                           CONSTRAINT fk_classroom_schedules FOREIGN KEY (`classroom_id`) REFERENCES `classrooms` (`id`)
+                           CONSTRAINT fk_classroom_schedules FOREIGN KEY (`classroom_id`) REFERENCES `classrooms` (`id`),
+                             CONSTRAINT fk_block_schedules FOREIGN KEY (`block_id`) REFERENCES `blocks` (`id`)
 
 );
 
