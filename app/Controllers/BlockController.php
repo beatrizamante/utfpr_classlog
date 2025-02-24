@@ -39,11 +39,11 @@ class BlockController extends Controller
                     $block->photo()->update($image);
                 }
 
-              $response = [
+                $response = [
                 'id' => $block->id,
                 'name' => $block->name,
                 'photo' => $block->photo()->path(),
-              ];
+                ];
 
 
                 echo json_encode(['success' => 'Criado com sucesso', 'data' => $response]);

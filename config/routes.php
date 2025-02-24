@@ -1,7 +1,6 @@
 <?php
 
 header('Content-Type: application/json');
-//session_start();
 
 use App\Controllers\BlockController;
 use App\Controllers\ClassRoomController;
@@ -13,25 +12,18 @@ use App\Controllers\UsersController;
 use App\Controllers\UserSubjectsController;
 use Core\Router\Route;
 
-//if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login']) && isset($_POST['password'])) {
-//
-//  $_SESSION['user'] = 'authenticated';
-//  echo json_encode(['message' => 'Login bem-sucedido']);
-//} else {
-//  echo json_encode(['error' => 'Credenciais inválidas'], 401);
-//}
-
-// Authentication
 Route::get('/', [HomeController::class, 'index'])
   ->name('root');
-Route::get('/blocks-index', [HomeController::class, 'indexBlocks'])
+Route::get('/schedules/blocks-index', [HomeController::class, 'indexBlocks'])
   ->name('root.blocks');
 Route::post('/register', [UsersController::class, 'register'])
   ->name('users.register');
 Route::post('/login', [UsersController::class, 'login'])
   ->name('users.login');
 
-//Route::middleware('auth')->group(function () {
+Route::get('/blocks', [BlockController::class, 'index'])
+  ->name('blocks');
+Route::middleware('auth')->group(function () {
 
     Route::get('/logout', [UsersController::class, 'destroy'])
       ->name('users.logout');
@@ -41,8 +33,7 @@ Route::post('/login', [UsersController::class, 'login'])
       ->name('users.professors');
 
 
-    Route::get('/blocks', [BlockController::class, 'index'])
-      ->name('blocks');
+
 //    Route::middleware('role:admin')->group(function () {
         Route::post('/blocks', [BlockController::class, 'create'])
           ->name('blocks.create');
@@ -82,8 +73,11 @@ Route::post('/login', [UsersController::class, 'login'])
     Route::get('/schedules', [SchedulesController::class, 'index'])
       ->name('schedules.index');
 
-Route::get('/schedules/{id}', [SchedulesController::class, 'show'])
-  ->name('schedules.show');
+    Route::get('/schedules/professor/{id}', [SchedulesController::class, 'byProfessorId'])
+    ->name('schedules.userId');
+
+    Route::get('/schedules/{id}', [SchedulesController::class, 'show'])
+      ->name('schedules.show');
     Route::post('/schedules/cancel', [SchedulesController::class, 'creatreCancelSchedule'])
       ->name('schedules.cancel');
     Route::delete('/schedules/cancel/{id}', [SchedulesController::class, 'deleteCancelSchedule'])
@@ -103,11 +97,11 @@ Route::get('/schedules/{id}', [SchedulesController::class, 'show'])
     Route::get('/classrooms/{id}', [ClassRoomController::class, 'show'])
       ->name('classroom.show');
 
-
     Route::get('/subjects', [SubjectController::class, 'index'])
       ->name('subject');
     Route::get('/subjects/{id}', [SubjectController::class, 'show'])
       ->name('subject.show');
+
     Route::get('/user-subjects', [UserSubjectsController::class, 'index'])
       ->name('subject.professor');
-//});
+});

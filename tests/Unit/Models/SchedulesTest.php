@@ -15,6 +15,7 @@ use Tests\TestCase;
 
 use function date;
 use function strtotime;
+use function var_dump;
 
 class SchedulesTest extends TestCase
 {
@@ -131,6 +132,7 @@ class SchedulesTest extends TestCase
         "start_time" => "19:40",
         "end_time" => "21:20",
         "day_of_week" => 1,
+        "block_id" => $classrooms[4]->block->id,
         ],
         [
         "classroom" => $classrooms[0],
@@ -138,6 +140,7 @@ class SchedulesTest extends TestCase
         "start_time" => "18:40",
         "end_time" => "20:20",
         "day_of_week" => 1,
+        "block_id" => $classrooms[0]->block->id
 
         ],
         [
@@ -146,6 +149,7 @@ class SchedulesTest extends TestCase
         "start_time" => "18:40",
         "end_time" => "20:20",
         "day_of_week" => 2,
+        "block_id" => $classrooms[1]->block->id
         ],
         [
         "classroom" => $classrooms[2],
@@ -153,6 +157,8 @@ class SchedulesTest extends TestCase
         "start_time" => "19:40",
         "end_time" => "21:20",
         "day_of_week" => 2,
+        "block_id" => $classrooms[2]->block->id
+
         ],
         [
         "classroom" => $classrooms[3],
@@ -160,6 +166,7 @@ class SchedulesTest extends TestCase
         "start_time" => "18:40",
         "end_time" => "20:20",
         "day_of_week" => 3,
+        "block_id" => $classrooms[3]->block->id
         ],
         [
         "classroom" => $classrooms[1],
@@ -167,6 +174,7 @@ class SchedulesTest extends TestCase
         "start_time" => "19:40",
         "end_time" => "22:20",
         "day_of_week" => 3,
+        "block_id" => $classrooms[1]->block->id
         ],
         [
         "classroom" => $classrooms[5],
@@ -174,6 +182,7 @@ class SchedulesTest extends TestCase
         "start_time" => "18:40",
         "end_time" => "20:20",
         "day_of_week" => 4,
+        "block_id" => $classrooms[5]->block->id
         ],
         [
         "classroom" => $classrooms[2],
@@ -181,9 +190,9 @@ class SchedulesTest extends TestCase
         "start_time" => "19:40",
         "end_time" => "22:20",
         "day_of_week" => 4,
+        "block_id" => $classrooms[2]->block->id
         ],
         ];
-
         foreach ($schedulesData as $data) {
             $schedule = new Schedules([
             "classroom_id" => $data["classroom"]->id,
@@ -192,7 +201,8 @@ class SchedulesTest extends TestCase
             "end_time" => $data["end_time"],
             "default_day" => 1,
             "day_of_week" => $data["day_of_week"],
-            "is_canceled" => 0
+            "is_canceled" => 0,
+            "block_id" => $data["block_id"],
             ]);
             $schedule->save();
         }
@@ -207,7 +217,8 @@ class SchedulesTest extends TestCase
         'day_of_week' => $schedule->day_of_week,
         'is_canceled' => 1,
         'date' => $this->date,
-        'exceptional_day' => 0
+        'exceptional_day' => 0,
+        'block_id' => $schedule->block_id,
         ]);
 
         $this->cancelSchedule->save();
@@ -215,6 +226,7 @@ class SchedulesTest extends TestCase
 
     public function test_should_create_new_schedules(): void
     {
+        dd('Schedules::all()');
         $this->assertCount(9, Schedules::all());
     }
 

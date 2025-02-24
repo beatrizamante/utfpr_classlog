@@ -13,6 +13,7 @@ use Core\Database\ActiveRecord\Model;
  * @property string $name
  * @property string $university_registry
  * @property string $encrypted_password
+ * @property UserSubjects $userSubjects
  * @property int $role_id
  */
 class User extends Model
@@ -47,6 +48,15 @@ class User extends Model
     public static function findByUniversityRegistry(string $ra): User | null
     {
         return User::findBy(['university_registry' => $ra]);
+    }
+
+  /**
+   * @return HasMany
+   */
+
+    public function userSubjects(): HasMany
+    {
+        return $this->hasMany(UserSubjects::class, 'user_id');
     }
 
   /**

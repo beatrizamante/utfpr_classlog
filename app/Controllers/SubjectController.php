@@ -6,6 +6,7 @@ use App\Models\Subject;
 use Core\Http\Controllers\Controller;
 use Core\Http\Request;
 
+use function array_map;
 use function is_null;
 use function json_encode;
 
@@ -24,6 +25,7 @@ class SubjectController extends Controller
 
         echo json_encode($classRoomsArray);
     }
+
 
     public function create(Request $request): void
     {

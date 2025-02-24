@@ -54,46 +54,46 @@ class HomeController extends Controller
         echo json_encode(['schedules' => $schedulesArray]);
     }
 
-    public function indexBlocks(Request $request)
+    public function indexBlocks(Request $request): void
     {
-      $params = $request->getParams();
-      $date = date('Y-m-d');
-      if (isset($params['date'])) {
-        $date = $params['date'];
-      }
+        $params = $request->getParams();
+        $date = date('Y-m-d');
+        if (isset($params['date'])) {
+            $date = $params['date'];
+        }
 
-      if(isset($params['block_id'])){
-        $block_id = $params['block_id'];
-      } else {
-        http_response_code(400);
-        echo json_encode(['error' => 'Informe block_id nos parâmetros.']);
-        exit;
-      }
+        if (isset($params['block_id'])) {
+            $block_id = $params['block_id'];
+        } else {
+            http_response_code(400);
+            echo json_encode(['error' => 'Informe block_id nos parâmetros.']);
+            exit;
+        }
 
-      $schedules = Schedules::withCancelAndSubstitutionsCurrentWeekByBlock($date, $block_id);
+        $schedules = Schedules::withCancelAndSubstitutionsCurrentWeekByBlock($date, $block_id);
 
-      $schedulesArray = array_map(function ($schedule) {
-        return [
-          'id' => $schedule->id,
-          'start_time' => $schedule->start_time,
-          'end_time' => $schedule->end_time,
-          'day_of_week' => $schedule->day_of_week,
-          'default_day' => $schedule->default_day,
-          'exceptional_day' => $schedule->exceptional_day,
-          'subject_professor_id' => $schedule->userSubject->user->id,
-          'subject_professor_name' => $schedule->userSubject->user->name,
-          'subject_subject_id' => $schedule->userSubject->subject->id,
-          'subject_subject_name' => $schedule->userSubject->subject->name,
-          'classroom_id' => $schedule->classroom->id,
-          'classroom_name' => $schedule->classroom->name,
-          'block_id' => $schedule->classroom->block->id,
-          'block_name' => $schedule->classroom->block->name,
-          'block_photo' => $schedule->classroom->block->photo()->path(),
-          'date' => $schedule->date,
-          'is_canceled' => $schedule->is_canceled,
-        ];
-      }, $schedules);
+        $schedulesArray = array_map(function ($schedule) {
+            return [
+            'id' => $schedule->id,
+            'start_time' => $schedule->start_time,
+            'end_time' => $schedule->end_time,
+            'day_of_week' => $schedule->day_of_week,
+            'default_day' => $schedule->default_day,
+            'exceptional_day' => $schedule->exceptional_day,
+            'subject_professor_id' => $schedule->userSubject->user->id,
+            'subject_professor_name' => $schedule->userSubject->user->name,
+            'subject_subject_id' => $schedule->userSubject->subject->id,
+            'subject_subject_name' => $schedule->userSubject->subject->name,
+            'classroom_id' => $schedule->classroom->id,
+            'classroom_name' => $schedule->classroom->name,
+            'block_id' => $schedule->classroom->block->id,
+            'block_name' => $schedule->classroom->block->name,
+            'block_photo' => $schedule->classroom->block->photo()->path(),
+            'date' => $schedule->date,
+            'is_canceled' => $schedule->is_canceled,
+            ];
+        }, $schedules);
 
-      echo json_encode(['schedules' => $schedulesArray]);
+        echo json_encode(['schedules' => $schedulesArray]);
     }
 }

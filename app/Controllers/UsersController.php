@@ -9,7 +9,9 @@ use Core\Http\Request;
 use Lib\Authentication\Auth;
 
 use function array_map;
+use function hash;
 use function json_encode;
+use function password_hash;
 
 class UsersController extends Controller
 {
@@ -35,19 +37,17 @@ class UsersController extends Controller
         $params = $request->getBody();
         $user = User::findByUniversityRegistry($params['university_registry']);
         if ($user && $user->authenticate($params['password'])) {
-
             Auth::login($user);
-          $_SESSION['user']['id'] = $user->id;
-          echo json_encode([
+
+            echo json_encode([
               'success' => 'Logado com sucesso',
               'role' => $user->roleName(),
+              'token' => $user->id
             ]);
         } else {
             http_response_code(400);
             echo json_encode(['error' => 'Credenciais erradas']);
         }
-
-
     }
 
     public function destroy(): void

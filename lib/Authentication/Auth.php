@@ -4,6 +4,8 @@ namespace Lib\Authentication;
 
 use App\Models\User;
 
+use function str_replace;
+
 class Auth
 {
     public static function login($user): void
@@ -17,13 +19,19 @@ class Auth
             $id = $_SESSION['user']['id'];
             return User::findById($id);
         }
-
         return null;
     }
 
     public static function check(): bool
     {
-        return isset($_SESSION['user']['id']) && self::user() !== null;
+        return true;
+        if ($_SESSION['user']['id'] == str_replace("Bearer ", "", $_SERVER["HTTP_AUTHORIZATION"])) {
+            return true;
+        }
+        return false;
+//      $token = str_replace("Bearer ", "", $_SERVER["HTTP_AUTHORIZATION"]);
+//      return $_SESSION['user']['id'] == $token;
+//        return isset($_SESSION['user']['id']) && self::user() !== null;
     }
 
     public static function logout(): void

@@ -11,6 +11,7 @@ use PDO;
 use function array_values;
 use function date;
 use function strtotime;
+use function var_dump;
 
 /**
  * @property int $id
@@ -84,51 +85,105 @@ class Schedules extends Model
    * @return array<Schedules> Um array de objetos Schedules.
    */
 
+    public static function byProfessorId(int $userId): array
+    {
+        $user = User::findById($userId);
 
-  public static function defaultSchedulesBlock($blockId): array
-  {
-    $sql = "SELECT * FROM schedules WHERE date IS NULL AND block_id = :block_id";
-    $pdo = Database::getDatabaseConn();
-    $stmt = $pdo->prepare($sql);
-    $stmt->bindParam(':block_id', $blockId);
+      /** @var \App\Models\UserSubjects[] $userSubjects */
+        $userSubjects = $user->userSubjects;
+        $userSubjectIds = array_map(function ($userSubject) {
+            return $userSubject->id;
+        }, $userSubjects);
 
-    $stmt->execute();
-    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $pdo = Database::getDatabaseConn();
 
-    $models = [];
-    foreach ($rows as $row) {
-      $models[] = new static($row);
+        $startOfWeek = date('Y-m-d', strtotime('monday this week'));
+        $endOfWeek = date('Y-m-d', strtotime('sunday this week'));
+
+        $placeholders = [];
+        $params = [];
+
+        foreach ($userSubjectIds as $index => $id) {
+            $paramName = ":user_subject_id_$index";
+            $placeholders[] = $paramName;
+            $params[$paramName] = $id;
+        }
+
+        $sql = "SELECT * FROM schedules
+        WHERE (date IS NULL OR (date BETWEEN :start_date AND :end_date))
+        AND user_subject_id IN (" . implode(',', $placeholders) . ")";
+
+        $stmt = $pdo->prepare($sql);
+
+        $stmt->bindValue(':start_date', $startOfWeek, PDO::PARAM_STR);
+        $stmt->bindValue(':end_date', $endOfWeek, PDO::PARAM_STR);
+
+        foreach ($params as $paramName => $value) {
+            $stmt->bindValue($paramName, $value, PDO::PARAM_INT);
+        }
+
+        $stmt->execute();
+
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $models = [];
+        foreach ($rows as $row) {
+            $models[] = new static($row);
+        }
+        return $models;
     }
-    return $models;
-  }
+
   /**
    *
    * @return array<Schedules> Um array de objetos Schedules.
    */
 
 
-  public static function canceledSchedulesBlocks(string $date, int $blockId): array
-  {
+    public static function defaultSchedulesBlock(int $blockId): array
+    {
+        $sql = "SELECT * FROM schedules WHERE date IS NULL AND block_id = :block_id";
+        $pdo = Database::getDatabaseConn();
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindParam(':block_id', $blockId);
 
-    $startOfWeek = date('Y-m-d', strtotime('monday this week', strtotime($date)));
-    $endOfWeek = date('Y-m-d', strtotime('sunday this week', strtotime($date)));
-    $sql = "SELECT * FROM schedules WHERE (date BETWEEN :startOfWeek AND :endOfWeek)
-                          AND (is_canceled = 1 OR exceptional_day = 1)
-                          AND (block_id = :block_id)";
-    $pdo = Database::getDatabaseConn();
-    $stmt = $pdo->prepare($sql);
-    $stmt->bindParam(':block_id', $blockId);
-    $stmt->bindParam(':startOfWeek', $startOfWeek);
-    $stmt->bindParam(':endOfWeek', $endOfWeek);
-    $stmt->execute();
-    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->execute();
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    $models = [];
-    foreach ($rows as $row) {
-      $models[] = new static($row);
+        $models = [];
+        foreach ($rows as $row) {
+            $models[] = new static($row);
+        }
+        return $models;
     }
-    return $models;
-  }
+  /**
+   *
+   * @return array<Schedules> Um array de objetos Schedules.
+   */
+
+
+    public static function canceledSchedulesBlocks(string $date, int $blockId): array
+    {
+
+        $startOfWeek = date('Y-m-d', strtotime('monday this week', strtotime($date)));
+        $endOfWeek = date('Y-m-d', strtotime('sunday this week', strtotime($date)));
+        $sql = "SELECT * FROM schedules
+            WHERE block_id = :block_id
+            AND (is_canceled = 1 OR exceptional_day = 1)
+            AND date BETWEEN :startOfWeek AND :endOfWeek";
+        $pdo = Database::getDatabaseConn();
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindParam(':block_id', $blockId, PDO::PARAM_INT);
+        $stmt->bindParam(':startOfWeek', $startOfWeek);
+        $stmt->bindParam(':endOfWeek', $endOfWeek);
+        $stmt->execute();
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $models = [];
+        foreach ($rows as $row) {
+            $models[] = new static($row);
+        }
+        return $models;
+    }
 
 
   /**
@@ -162,8 +217,8 @@ class Schedules extends Model
 
     public static function withCancelAndSubstitutionsCurrentWeek(string $date): array
     {
-        $canceleds = (self::canceledSchedules($date));
         $defaults = self::defaultSchedules();
+        $canceleds = (self::canceledSchedules($date));
 
         $indexedSchedules = [];
 
@@ -195,33 +250,34 @@ class Schedules extends Model
    * @return array<Schedules> Um array de objetos Schedules.
    */
 
-  public static function withCancelAndSubstitutionsCurrentWeekByBlock(string $date, int $blockId): array
-  {
-    $defaults = self::defaultSchedulesBlock($blockId);
-    $canceleds = (self::canceledSchedulesBlocks($date, 1));
+    public static function withCancelAndSubstitutionsCurrentWeekByBlock(string $date, int $blockId): array
+    {
+        $defaults = self::defaultSchedulesBlock($blockId);
+        $canceleds = (self::canceledSchedulesBlocks($date, $blockId));
 
-    $indexedSchedules = [];
 
-    foreach ($canceleds as $canceled) {
-      $key = "{$canceled->day_of_week}-{$canceled->classroom_id}-{$canceled->start_time}-{$canceled->end_time}";
+        $indexedSchedules = [];
 
-      if ($canceled->exceptional_day == 1) {
-        $indexedSchedules[$key] = $canceled;
-        continue;
-      }
+        foreach ($canceleds as $canceled) {
+            $key = "{$canceled->day_of_week}-{$canceled->classroom_id}-{$canceled->start_time}-{$canceled->end_time}";
 
-      if ($canceled->is_canceled == 1 && !isset($indexedSchedules[$key])) {
-        $indexedSchedules[$key] = $canceled;
-      }
+            if ($canceled->exceptional_day == 1) {
+                $indexedSchedules[$key] = $canceled;
+                continue;
+            }
+
+            if ($canceled->is_canceled == 1 && !isset($indexedSchedules[$key])) {
+                $indexedSchedules[$key] = $canceled;
+            }
+        }
+
+        foreach ($defaults as $default) {
+            $key = "{$default->day_of_week}-{$default->classroom_id}-{$default->start_time}-{$default->end_time}";
+
+            if (!isset($indexedSchedules[$key])) {
+                $indexedSchedules[$key] = $default;
+            }
+        }
+        return array_values($indexedSchedules);
     }
-
-    foreach ($defaults as $default) {
-      $key = "{$default->day_of_week}-{$default->classroom_id}-{$default->start_time}-{$default->end_time}";
-
-      if (!isset($indexedSchedules[$key])) {
-        $indexedSchedules[$key] = $default;
-      }
-    }
-    return array_values($indexedSchedules);
-  }
 }
