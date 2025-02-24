@@ -1,6 +1,7 @@
 <?php
 
 header('Content-Type: application/json');
+//session_start();
 
 use App\Controllers\BlockController;
 use App\Controllers\ClassRoomController;
@@ -12,6 +13,14 @@ use App\Controllers\UsersController;
 use App\Controllers\UserSubjectsController;
 use Core\Router\Route;
 
+//if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login']) && isset($_POST['password'])) {
+//
+//  $_SESSION['user'] = 'authenticated';
+//  echo json_encode(['message' => 'Login bem-sucedido']);
+//} else {
+//  echo json_encode(['error' => 'Credenciais inválidas'], 401);
+//}
+
 // Authentication
 Route::get('/', [HomeController::class, 'index'])
   ->name('root');
@@ -20,7 +29,7 @@ Route::post('/register', [UsersController::class, 'register'])
 Route::post('/login', [UsersController::class, 'login'])
   ->name('users.login');
 
-Route::middleware('auth')->group(function () {
+//Route::middleware('auth')->group(function () {
 
     Route::get('/logout', [UsersController::class, 'destroy'])
       ->name('users.logout');
@@ -32,7 +41,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/blocks', [BlockController::class, 'index'])
       ->name('blocks');
-    Route::middleware('role:admin')->group(function () {
+//    Route::middleware('role:admin')->group(function () {
         Route::post('/blocks', [BlockController::class, 'create'])
           ->name('blocks.create');
         Route::post('/blocks/image-update/{id}', [BlockController::class, 'imageUpdate'])
@@ -66,10 +75,13 @@ Route::middleware('auth')->group(function () {
           ->name('schedules.create');
         Route::delete('/schedules/{id}', [SchedulesController::class, 'delete'])
           ->name('schedules.delete');
-    });
+//    });
 
     Route::get('/schedules', [SchedulesController::class, 'index'])
       ->name('schedules.index');
+
+Route::get('/schedules/{id}', [SchedulesController::class, 'show'])
+  ->name('schedules.show');
     Route::post('/schedules/cancel', [SchedulesController::class, 'creatreCancelSchedule'])
       ->name('schedules.cancel');
     Route::delete('/schedules/cancel/{id}', [SchedulesController::class, 'deleteCancelSchedule'])
@@ -96,4 +108,4 @@ Route::middleware('auth')->group(function () {
       ->name('subject.show');
     Route::get('/user-subjects', [UserSubjectsController::class, 'index'])
       ->name('subject.professor');
-});
+//});

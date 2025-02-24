@@ -6,6 +6,7 @@ use App\Models\Block;
 use Core\Http\Controllers\Controller;
 use Core\Http\Request;
 
+use function array_map;
 use function is_null;
 use function json_encode;
 
@@ -37,7 +38,15 @@ class BlockController extends Controller
                 if (!is_null($image)) {
                     $block->photo()->update($image);
                 }
-                echo json_encode(['success' => 'Criado com sucesso']);
+
+              $response = [
+                'id' => $block->id,
+                'name' => $block->name,
+                'photo' => $block->photo()->path(),
+              ];
+
+
+                echo json_encode(['success' => 'Criado com sucesso', 'data' => $response]);
             } else {
                 echo json_encode(['error' => $block->getErrors()]);
             }

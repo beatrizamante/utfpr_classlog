@@ -44,6 +44,34 @@ class SchedulesController extends Controller
         echo json_encode($schedulesArray);
     }
 
+    public function show(Request $request): void
+    {
+      $schedule = Schedules::findById($request->getParams()['id']);
+
+        $scheduleArray =  [
+          'id' => $schedule->id,
+          'start_time' => $schedule->start_time,
+          'end_time' => $schedule->end_time,
+          'day_of_week' => $schedule->day_of_week,
+          'default_day' => $schedule->default_day,
+          'exceptional_day' => $schedule->exceptional_day,
+          'subject_professor_id' => $schedule->userSubject->user->id,
+          'subject_professor_name' => $schedule->userSubject->user->name,
+          'subject_subject_id' => $schedule->userSubject->subject->id,
+          'subject_subject_name' => $schedule->userSubject->subject->name,
+          'classroom_id' => $schedule->classroom->id,
+          'classroom_name' => $schedule->classroom->name,
+          'block_id' => $schedule->classroom->block->id,
+          'block_name' => $schedule->classroom->block->name,
+          'block_photo' => $schedule->classroom->block->photo()->path(),
+          'date' => $schedule->date,
+          'is_canceled' => $schedule->is_canceled,
+        ];
+
+
+      echo json_encode($scheduleArray);
+    }
+
     public function exceptions(Request $request): void
     {
 
@@ -171,7 +199,7 @@ class SchedulesController extends Controller
           'date' => $date,
           'exceptional_day' => 1,
         ]);
-        if ($this->validatesCancelDateConflict($changeSchedule)) {
+        if (!$this->validatesCancelDateConflict($changeSchedule)) {
             if (!$this->validatesRoomChangeDateConflict($changeSchedule)) {
                 $changeSchedule->save();
                 echo json_encode($changeSchedule);

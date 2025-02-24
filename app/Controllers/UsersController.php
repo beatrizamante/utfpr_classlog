@@ -35,11 +35,19 @@ class UsersController extends Controller
         $params = $request->getBody();
         $user = User::findByUniversityRegistry($params['university_registry']);
         if ($user && $user->authenticate($params['password'])) {
+
             Auth::login($user);
-            echo json_encode(['success' => 'Logado com sucesso']);
+          $_SESSION['user']['id'] = $user->id;
+          echo json_encode([
+              'success' => 'Logado com sucesso',
+              'role' => $user->roleName(),
+            ]);
         } else {
-            echo json_encode(['error' => $user->getErrors()]);
+            http_response_code(400);
+            echo json_encode(['error' => 'Credenciais erradas']);
         }
+
+
     }
 
     public function destroy(): void
