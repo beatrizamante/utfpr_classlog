@@ -41,6 +41,8 @@ class SchedulesController extends Controller
               'default_day' => $schedule->default_day,
               'exceptional_day' => $schedule->exceptional_day,
               'user_subject_id' => $schedule->user_subject_id,
+              'professor_name' => $schedule->user_subject->user->name,
+              'subject_name' => $schedule->user_subject->subject->name,
               'classroom_id' => $schedule->classroom_id,
               'date' => $schedule->date,
               'is_canceled' => $schedule->is_canceled,
@@ -173,11 +175,11 @@ class SchedulesController extends Controller
         $date = $params['date'];
         $schedule = Schedules::findById($id);
 
-//        if ($this->currentUser()->id != $schedule->userSubject->user->id) {
-//            if ($this->currentUser()->roleName() != 'admin') {
-//                echo json_encode(['message' => 'Somente o usuário encarregado da aula pode cancela-la']);
-//            }
-//        }
+        if ($this->currentUser()->id != $schedule->userSubject->user->id) {
+            if ($this->currentUser()->roleName() != 'admin') {
+                echo json_encode(['message' => 'Somente o usuário encarregado da aula pode cancela-la']);
+            }
+        }
         $cancelSchedule = new Schedules([
         'start_time' => $schedule->start_time,
         'end_time' => $schedule->end_time,

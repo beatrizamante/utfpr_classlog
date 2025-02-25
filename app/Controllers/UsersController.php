@@ -45,7 +45,7 @@ class UsersController extends Controller
             "iss" => "http://localhost",
             "aud" => "http://localhost",
             "iat" => time(),
-            "exp" => time() + (60 * 60),
+            "exp" => time() + (60 * 60) * 2,
             "user_id" => $user->id
             ];
             $token = JWT::encode($payload, $_ENV['PASSWORD_KEY_HASH'], 'HS256');
