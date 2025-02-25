@@ -259,21 +259,21 @@ class SchedulesController extends Controller
 
     public function delete(Request $request): void
     {
-      try {
-        $params = $request->getParams();
-        $schedule = Schedules::findById($params['id']);
+        try {
+            $params = $request->getParams();
+            $schedule = Schedules::findById($params['id']);
 
-        if (!$schedule) {
-          echo json_encode(['error' => 'Bloco não encontrado']);
-          return;
+            if (!$schedule) {
+                echo json_encode(['error' => 'Bloco não encontrado']);
+                return;
+            }
+
+            $schedule->destroy();
+
+            echo json_encode(['success' => 'Deletado com sucesso']);
+        } catch (Exception $e) {
+            echo json_encode(['error' => $e->getMessage()]);
         }
-
-        $schedule->destroy();
-
-        echo json_encode(['success' => 'Deletado com sucesso']);
-      } catch (Exception $e) {
-        echo json_encode(['error' => $e->getMessage()]);
-      }
     }
 
     public function validatesDateConflict(Schedules $schedule): bool

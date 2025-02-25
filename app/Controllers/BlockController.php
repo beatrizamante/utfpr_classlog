@@ -5,8 +5,8 @@ namespace App\Controllers;
 use App\Models\Block;
 use Core\Http\Controllers\Controller;
 use Core\Http\Request;
-
 use Exception;
+
 use function array_map;
 use function is_null;
 use function json_encode;
@@ -111,20 +111,20 @@ class BlockController extends Controller
 
     public function destroy(Request $request): void
     {
-      try {
-        $params = $request->getParams();
-        $block = Block::findById($params['id']);
+        try {
+            $params = $request->getParams();
+            $block = Block::findById($params['id']);
 
-        if (!$block) {
-          echo json_encode(['error' => 'Bloco não encontrado']);
-          return;
+            if (!$block) {
+                echo json_encode(['error' => 'Bloco não encontrado']);
+                return;
+            }
+
+            $block->destroy();
+
+            echo json_encode(['success' => 'Deletado com sucesso']);
+        } catch (Exception $e) {
+            echo json_encode(['error' => $e->getMessage()]);
         }
-
-        $block->destroy();
-
-        echo json_encode(['success' => 'Deletado com sucesso']);
-      } catch (Exception $e) {
-        echo json_encode(['error' => $e->getMessage()]);
-      }
     }
 }

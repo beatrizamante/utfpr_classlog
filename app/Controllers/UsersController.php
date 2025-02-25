@@ -41,14 +41,14 @@ class UsersController extends Controller
         if ($user && $user->authenticate($params['password'])) {
             Auth::login($user);
 
-          $payload = [
+            $payload = [
             "iss" => "http://localhost",
             "aud" => "http://localhost",
             "iat" => time(),
             "exp" => time() + (60 * 60),
             "user_id" => $user->id
-          ];
-          $token = JWT::encode($payload,$_ENV['PASSWORD_KEY_HASH'], 'HS256');
+            ];
+            $token = JWT::encode($payload, $_ENV['PASSWORD_KEY_HASH'], 'HS256');
             echo json_encode([
               'success' => 'Logado com sucesso',
               'role' => $user->roleName(),

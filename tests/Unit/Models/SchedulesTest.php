@@ -226,7 +226,6 @@ class SchedulesTest extends TestCase
 
     public function test_should_create_new_schedules(): void
     {
-        dd('Schedules::all()');
         $this->assertCount(9, Schedules::all());
     }
 
@@ -257,6 +256,7 @@ class SchedulesTest extends TestCase
         'is_canceled' => 0,
         'date' => $this->date,
         'exceptional_day' => 1,
+        'block_id' => $schedule->block_id
         ]);
         $changeSchedule->save();
         $schedules = Schedules::withCancelAndSubstitutionsCurrentWeek($this->date);
