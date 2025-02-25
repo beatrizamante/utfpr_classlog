@@ -25,14 +25,12 @@ class Auth
     {
         $headers = getallheaders();
         if (!isset($headers['Authorization'])) {
-    //      http_response_code(401);
-    //      echo json_encode(["error" => "Token não fornecido"]);
             return null;
             exit();
         }
 
         $token = str_replace('Bearer ', '', $headers['Authorization']);
-        $data = self::validatesToken($token); // Alterado para 'self::' porque 'validatesToken' é estático
+        $data = self::validatesToken($token);
         if (isset($data['user_id'])) {
             return User::findById($data['user_id']);
         }

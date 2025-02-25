@@ -76,7 +76,6 @@ Route::middleware('auth')->group(function () {
         ->name('schedules.delete');
     });
 
-  // Outras rotas protegidas
     Route::get('/schedules', [SchedulesController::class, 'index'])
     ->name('schedules.index');
 
