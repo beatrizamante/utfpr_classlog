@@ -8,7 +8,9 @@ use App\Models\Schedules;
 use Core\Database\Database;
 use Core\Http\Controllers\Controller;
 use Core\Http\Request;
+use Exception;
 use PDO;
+use PDOException;
 
 use function is_null;
 use function json_encode;
@@ -88,10 +90,20 @@ class ClassRoomController extends Controller
 
     public function destroy(Request $request): void
     {
-        $params = $request->getParams();
-        $block = Block::findById($params['id']);
-        $block->destroy();
+        try {
+            $params = $request->getParams();
+            $classroom = ClassRoom::findById($params['id']);
 
-        echo json_encode(['success' => 'deletado com sucesso']);
+            if (!$classroom) {
+                echo json_encode(['error' => 'Bloco não encontrado']);
+                return;
+            }
+
+            $classroom->destroy();
+
+            echo json_encode(['success' => 'Deletado com sucesso']);
+        } catch (Exception $e) {
+            echo json_encode(['error' => $e->getMessage()]);
+        }
     }
 }

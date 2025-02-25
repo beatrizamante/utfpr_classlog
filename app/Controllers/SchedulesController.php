@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Enums\RolesEnum;
+use App\Models\Block;
 use App\Models\ClassRoom;
 use App\Models\Roles;
 use App\Models\Schedules;
@@ -52,9 +53,8 @@ class SchedulesController extends Controller
 
     public function byProfessorId(Request $request): void
     {
-
-        $id = $request->getParams()['id'];
-        $allSchedules = Schedules::byProfessorId($id);
+        $userId = (Auth::user()->id);
+        $allSchedules = Schedules::byProfessorId($userId);
         $schedulesArray = array_map(function ($schedule) {
             return [
             'id' => $schedule->id,
@@ -259,9 +259,21 @@ class SchedulesController extends Controller
 
     public function delete(Request $request): void
     {
-        $params = $request->getParams();
-        $subject = Schedules::findById($params['id']);
-        $subject->destroy();
+        try {
+            $params = $request->getParams();
+            $schedule = Schedules::findById($params['id']);
+
+            if (!$schedule) {
+                echo json_encode(['error' => 'Bloco não encontrado']);
+                return;
+            }
+
+            $schedule->destroy();
+
+            echo json_encode(['success' => 'Deletado com sucesso']);
+        } catch (Exception $e) {
+            echo json_encode(['error' => $e->getMessage()]);
+        }
     }
 
     public function validatesDateConflict(Schedules $schedule): bool

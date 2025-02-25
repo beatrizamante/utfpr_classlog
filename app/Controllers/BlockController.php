@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Models\Block;
 use Core\Http\Controllers\Controller;
 use Core\Http\Request;
+use Exception;
 
 use function array_map;
 use function is_null;
@@ -30,8 +31,7 @@ class BlockController extends Controller
     {
         $image = ($_FILES['photo'] ?? null);
         $params = $request->getBody();
-        unset($params['PHPSESSID']);
-        $block = new Block($params);
+        $block = new Block(['name' => $params['name']]);
 
         if ($block->isValid()) {
             if ($block->save()) {
@@ -111,10 +111,20 @@ class BlockController extends Controller
 
     public function destroy(Request $request): void
     {
-        $params = $request->getParams();
-        $block = Block::findById($params['id']);
-        $block->destroy();
+        try {
+            $params = $request->getParams();
+            $block = Block::findById($params['id']);
 
-        echo json_encode(['success' => 'deletado com sucesso']);
+            if (!$block) {
+                echo json_encode(['error' => 'Bloco não encontrado']);
+                return;
+            }
+
+            $block->destroy();
+
+            echo json_encode(['success' => 'Deletado com sucesso']);
+        } catch (Exception $e) {
+            echo json_encode(['error' => $e->getMessage()]);
+        }
     }
 }
