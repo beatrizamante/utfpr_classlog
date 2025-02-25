@@ -18,10 +18,15 @@ class SubjectController extends Controller
     {
         $allSubjects = Subject::all();
         $classRoomsArray = array_map(function ($subject) {
+    /** @var \App\Models\User[] $professors */
+            $professors = $subject->professors;
             return [
                   'id' => $subject->id,
                   'name' => $subject->name,
                   'semester' => $subject->semester,
+                  'professors' => array_map(function ($professor) {
+                    return [$professor->name];
+                  }, $professors)
             ];
         }, $allSubjects);
 

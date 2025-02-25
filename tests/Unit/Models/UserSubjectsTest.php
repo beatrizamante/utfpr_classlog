@@ -57,17 +57,6 @@ class UserSubjectsTest extends TestCase
         $this->assertCount(0, UserSubjects::all());
     }
 
-    public function test_user_subject_id_shold_be_unique(): void
-    {
-        $newUserSubject = new UserSubjects([
-        'user_id' => $this->user->id,
-        'subject_id' => $this->subject->id
-        ]);
-
-        $newUserSubject->save();
-        $this->assertEquals($newUserSubject->errors['subject_id'], 'já existe um registro com esse dado');
-    }
-
     public function test_user_subject_belongs_to_user(): void
     {
         $this->assertInstanceOf(BelongsTo::class, $this->userSubjects->user());

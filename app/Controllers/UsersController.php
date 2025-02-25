@@ -71,9 +71,15 @@ class UsersController extends Controller
         $professors = User::where(['role_id' => RolesEnum::PROFESSOR->value]);
 
         $professorsArray = array_map(function ($professor) {
+          /** @var \App\Models\Subject[] $subjects */
+
+            $subjects = $professor->subjects;
             return [
             'id' => $professor->id,
             'name' => $professor->name,
+              'maetérias' => array_map(function ($subject) {
+                return [$subject->name];
+              }, $subjects)
             ];
         }, $professors);
         echo json_encode(['data' => $professorsArray]);

@@ -66,6 +66,7 @@ Route::middleware('auth')->group(function () {
 
         Route::post('/user-subjects', [UserSubjectsController::class, 'addSubjectToProfessor'])
         ->name('subject.professor.create');
+
         Route::delete('/user-subjects/{id}', [UserSubjectsController::class, 'delete'])
         ->name('subject.professor.delete');
 

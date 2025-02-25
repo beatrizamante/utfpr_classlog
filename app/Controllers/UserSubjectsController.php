@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Models\UserSubjects;
 use Core\Http\Controllers\Controller;
 use Core\Http\Request;
+use Exception;
 
 use function array_map;
 use function json_encode;

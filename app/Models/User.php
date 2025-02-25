@@ -14,6 +14,7 @@ use Core\Database\ActiveRecord\Model;
  * @property string $university_registry
  * @property string $encrypted_password
  * @property UserSubjects $userSubjects
+ * @property Subject $subjects
  * @property int $role_id
  */
 class User extends Model
@@ -65,6 +66,14 @@ class User extends Model
     public function role(): BelongsTo
     {
         return $this->belongsTo(Roles::class, 'role_id');
+    }
+
+  /**
+   * @return BelongsToMany
+   */
+    public function subjects(): BelongsToMany
+    {
+        return $this->belongsToMany(Subject::class, 'user_subjects', 'user_id', 'subject_id');
     }
 
     public function roleName(): ?string
