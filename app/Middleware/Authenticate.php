@@ -32,8 +32,6 @@ class Authenticate implements Middleware
             echo json_encode(["error" => "Token inválido"]);
             exit();
         }
-
-  //    echo json_encode(["message" => "Autorizado", "user" => $data]);
     }
   /**
    *
