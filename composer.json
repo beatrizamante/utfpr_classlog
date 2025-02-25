@@ -17,5 +17,8 @@
         "phpunit/phpunit": "^11.1",
         "squizlabs/php_codesniffer": "*",
         "phpstan/phpstan": "^1.10"
+    },
+    "require": {
+        "firebase/php-jwt": "^6.11"
     }
 }

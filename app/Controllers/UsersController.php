@@ -6,9 +6,11 @@ use App\Enums\RolesEnum;
 use App\Models\User;
 use Core\Http\Controllers\Controller;
 use Core\Http\Request;
+use Firebase\JWT\JWT;
 use Lib\Authentication\Auth;
 
 use function array_map;
+use function getenv;
 use function hash;
 use function json_encode;
 use function password_hash;
@@ -39,10 +41,18 @@ class UsersController extends Controller
         if ($user && $user->authenticate($params['password'])) {
             Auth::login($user);
 
+          $payload = [
+            "iss" => "http://localhost",
+            "aud" => "http://localhost",
+            "iat" => time(),
+            "exp" => time() + (60 * 60),
+            "user_id" => $user->id
+          ];
+          $token = JWT::encode($payload,$_ENV['PASSWORD_KEY_HASH'], 'HS256');
             echo json_encode([
               'success' => 'Logado com sucesso',
               'role' => $user->roleName(),
-              'token' => $user->id
+              'token' => $token
             ]);
         } else {
             http_response_code(400);

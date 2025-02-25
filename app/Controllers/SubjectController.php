@@ -2,10 +2,12 @@
 
 namespace App\Controllers;
 
+use App\Models\Block;
 use App\Models\Subject;
 use Core\Http\Controllers\Controller;
 use Core\Http\Request;
 
+use Exception;
 use function array_map;
 use function is_null;
 use function json_encode;
@@ -84,10 +86,20 @@ class SubjectController extends Controller
 
     public function destroy(Request $request): void
     {
+      try {
         $params = $request->getParams();
         $subject = Subject::findById($params['id']);
+
+        if (!$subject) {
+          echo json_encode(['error' => 'Bloco não encontrado']);
+          return;
+        }
+
         $subject->destroy();
 
-        echo json_encode(['success' => 'deletado com sucesso']);
+        echo json_encode(['success' => 'Deletado com sucesso']);
+      } catch (Exception $e) {
+        echo json_encode(['error' => $e->getMessage()]);
+      }
     }
 }

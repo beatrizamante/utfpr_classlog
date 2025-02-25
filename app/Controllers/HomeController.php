@@ -21,7 +21,6 @@ class HomeController extends Controller
 {
     public function index(Request $request): void
     {
-
         $params = $request->getParams();
         $date = date('Y-m-d');
         if (isset($params['date'])) {
