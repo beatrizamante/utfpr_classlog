@@ -2,6 +2,7 @@
 
 namespace App\Middleware;
 
+use App\Enums\RolesEnum;
 use App\Models\User;
 use Core\Exceptions\HTTPException;
 use Core\Http\Middleware\Middleware;
@@ -32,7 +33,7 @@ class AdminRole implements Middleware
         $data = $this->validatesToken($token);
         $user = User::findById($data['user_id']);
 
-        if ($user->role_id != 1) {
+        if ($user->role_id != RolesEnum::ADMIN->value) {
             header('Content-Type: application/json', true, 401);
             echo json_encode(['error' => 'Acesso restrito a admnistradores']);
             exit;

@@ -274,4 +274,11 @@ class SchedulesTest extends TestCase
 
         $this->assertTrue($found, 'O agendamento com a sala alterada não foi encontrado.');
     }
+
+    public function test_should_delete_schedule(): void
+    {
+        $schedule = Schedules::findById(1);
+        $schedule->destroy();
+        $this->assertCount(8, Schedules::all());
+    }
 }
